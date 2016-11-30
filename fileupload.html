@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<input type="file" multiple id="file">
+<input type="text" id='d' required>
+<input type="submit" id="a">
+<div></div>
+<script type="text/javascript">
+	$ = function (element) {
+		return document.querySelector(element);
+	}
+
+	function addEvent(element, event, listener) {
+	    element.addEventListener(event, listener);
+	}
+
+	addEvent($('#d'), 'input', function () {
+		alert(this.value);
+	})
+
+	function previewPic() {
+		var files = this.files,
+			url, img;
+		for (var i = 0, num = files.length; i < num; i++) {
+			url = window.URL.createObjectURL(files[i]);
+			img = new Image();
+			img.setAttribute('src', url);
+			img.setAttribute('style', 'width:100px;height:100px');
+			$('div').appendChild(img);
+			var btn = document.createElement("button");
+			btn.setAttribute('id', data.length);
+			btn.innerText += 'del';
+			$('div').appendChild(btn);
+			data.push(files[i]);
+		}
+	}
+
+	function delPic(e) {
+		var btn = e.target;
+		var id = e.target.id;
+		var img = btn.previousSibling;
+		$('div').removeChild(btn);
+		$('div').removeChild(img);
+		delete data[id];
+		console.log(data);
+	}
+
+	function uploadPic() {
+		var xhr = new XMLHttpRequest();
+		xhr.open('post','l.php',true);
+		for (var i = 0, num = data.length; i < num; i++) {
+			if (data[i]) {
+				formData.append('files[]', data[i]);
+			}
+		}
+		xhr.send(formData);
+	}
+
+	var formData = new FormData(),
+		data = new Array();
+
+	function init() {
+		// 图片预览
+		addEvent($('#file'), 'change', previewPic);
+
+		// 删除图片
+		addEvent($('div'), 'click', delPic);
+
+		// 上传图片
+		addEvent($('#a'), 'click', uploadPic);
+	}
+
+	init();
+</script>
+</body>
+</html>
